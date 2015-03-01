@@ -1,65 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Video.js | Resolution Selector Plugin</title>
-	
-	<!-- Load Video.js core components -->
-	<link href="//vjs.zencdn.net/4.5/video-js.css" rel="stylesheet" />
-	<script src="//vjs.zencdn.net/4.5/video.js"></script>
-	
-	<!-- Load the plugin (NB: github is not a CDN, please host these files on your own server) -->
-	<link href="//raw.githubusercontent.com/dominic-p/videojs-resolution-selector/master/button-styles.css" rel="stylesheet" type="text/css" />
-	<script src="//raw.githubusercontent.com/dominic-p/videojs-resolution-selector/master/video-quality-selector.js"></script>
-	
+  <link type="text/css" rel="stylesheet" href="bower_components/video.js/dist/video-js/video-js.css" />
+  <script src="bower_components/video.js/dist/video-js/video.dev.js"></script>
+  <script src="bower_components/videojs-youtube/dist/vjs.youtube.js"></script>
+
+	<!-- Load the videojs-resolution-selector plugin -->
+	<link href="video-description-selector.css" rel="stylesheet" type="text/css" />
+	<script src="video-description-selector.js"></script>
+
 </head>
 <body>
-	
-	<h1>Example Setup</h1>
-	
-	<!-- This video has no data-setup attribute and needs to be initialized manually -->
-	<video id="example" class="video-js vjs-default-skin" controls width="640" height="360">
-		<source src="video-360.mp4" type="video/mp4" data-res="360" />
-		<source src="video-480.mp4" type="video/mp4" data-res="480" />
+	<video id="example1" class="video-js vjs-default-skin" controls width="640" height="360" data-setup='{ "plugins" : { "descriptionSelector" : { } }, "techOrder": ["youtube"] }'>
+		<source src="http://www.youtube.com/watch?v=OOgrSvnmhrY" type="video/youtube" />
+		<source src="http://www.youtube.com/watch?v=949D1IhKKYs" type="video/youtube" data-open-description />
 	</video>
-	
-	<!-- This video has a data-setup attribute and will be initialized by video.js automatically -->
-	<video id="example-2" class="video-js vjs-default-skin" controls width="640" height="360" data-setup='{ "plugins" : { "resolutionSelector" : { "default_res" : "480" } } }'>
-		<source src="video-360.mp4" type="video/mp4" data-res="360" />
-		<source src="video-480.mp4" type="video/mp4" data-res="480" />
+
+	<br>
+
+	<video id="example2" class="video-js vjs-default-skin" controls width="640" height="360" data-setup='{ "plugins" : { "descriptionSelector" : { "defaultDescription" : "Simple" } }, "techOrder": ["youtube"] }'>
+		<source src="http://www.youtube.com/watch?v=OOgrSvnmhrY" type="video/youtube" />
+		<source src="http://www.youtube.com/watch?v=949D1IhKKYs" type="video/youtube" data-open-description="Simple" />
+		<source src="http://www.youtube.com/watch?v=Zl6xwuBJVIY" type="video/youtube" data-open-description="Extended" />
 	</video>
-	
-	<script type="text/javascript">
-		
-		/*
-		The first video tag does not have a data-setup attribute, so we will initialize
-		video.js and our plugin here. This technique is well suited for videos that are loaded
-		dynamically.
-		
-		The second video tag includes a data-setup attribute and it will be initialized
-		automatically when video.js loads.
-		*/
-		
-		// Initialize video.js and activate the resolution selector plugin
-		videojs( '#example', { plugins : { resolutionSelector : {
-			
-			// Pass any options here
-			default_res : '480'
-		
-		// Define an on.ready function
-		} } }, function() {
-			
-			// "this" will be a reference to the player object
-			var player = this;
-			
-			// Listen for the changeRes event
-			player.on( 'changeRes', function() {
-				
-				// player.getCurrentRes() can be used to get the currently selected resolution
-				console.log( 'Current Res is: ' + player.getCurrentRes() );
-			});
-		});
-		
-	</script>
-	
+
 </body>
 </html>
