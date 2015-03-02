@@ -3,25 +3,27 @@
  *
  * This plugin for Video.js adds a button to select a different video
  * with 'open description' (audio description added to the video)
- * on the toolbar. Usage:
+ * on the toolbar.
+ * 
+ * Typical usage:
  *
  * <video>
  * 	<source  src="..." />
- * 	<source data-open-description src="..." />
+ * 	<source data-described-video src="..." />
  * </video>
  *
  * Or (for more than one different description):
  *
  * <video>
  * 	<source  src="..." />
- * 	<source data-open-description="Simple" src="..." />
- * 	<source data-open-description="Expanded" src="..." />
+ * 	<source data-described-video="Simple" src="..." />
+ * 	<source data-described-video="Expanded" src="..." />
  * </video>
  */
 
 (function( _V_ ) {
 
-	var descriptionButtonLabel = 'Audio Description';
+	var descriptionButtonLabel = 'Described Video';
 
 	/***********************************************************************************
 	 * Define some helper functions
@@ -56,7 +58,7 @@
 
 			// Modify options for parent MenuItem class's init.
 			options.label = methods.description_label( options.desc );
-			options.selected = ( options.desc.toString() === player.getCurrentDesc().toString() );
+			options.selected = ( options.desc.toString() === player.getCurrentDescription().toString() );
 
 			// Call the parent constructor
 			_V_.MenuItem.call( this, player, options );
@@ -70,7 +72,7 @@
 			// Toggle the selected class whenever the description changes
 			player.on( 'changeDescription', _V_.bind( this, function() {
 
-				if ( this.dscrption == player.getCurrentDesc() ) {
+				if ( this.dscrption == player.getCurrentDescription() ) {
 
 					this.selected( true );
 
@@ -150,7 +152,7 @@
 
 	// onChangeDescription - Change classes of the element so it can change appearance
 	_V_.DescriptionSelectorToggle.prototype.onChangeDescription = function(){
-		var curr_desc = this.player_.getCurrentDesc();
+		var curr_desc = this.player_.getCurrentDescription();
 		if ( curr_desc === "true" || curr_desc === true ){
 			this.removeClass('vjs-not-described');
 			this.addClass('vjs-described');
@@ -233,7 +235,7 @@
 	/***********************************************************************************
 	 * Register the plugin with videojs, main plugin function
 	 ***********************************************************************************/
-	_V_.plugin( 'descriptionSelector', function( options ) {
+	_V_.plugin( 'describedVideoSelector', function( options ) {
 
 		// Only enable the plugin on HTML5 videos
 		//if ( ! this.el().firstChild.canPlayType  ) { return; }
@@ -250,27 +252,28 @@
 			// Override default options with those provided
 			settings = _V_.util.mergeOptions({
 
-				defaultDescription	: '',		// (string)	The description that should be selected by default ( false, true, or a string )
-				force_types	: false				// (array)	List of media types. If passed, we need to have source for each type in each description or that description will not be an option
+				defaultDescribedVideo	: false,	// (string)	The description that should be selected by default ( false, true, or a string )
+				force_types	: false					// (array)	List of media types. If passed, we need to have source for each type in each description or that description will not be an option
+
 
 			}, options || {} ),
 
 			available_desc = { length : 0 },
 			current_desc,
-			descriptionSelector,
+			describedVideoSelector,
 
 			// Split default descriptions if set and valid, otherwise default to an empty array
-			default_dscrptions = ( settings.defaultDescription && typeof settings.defaultDescription == 'string' ) ? settings.defaultDescription.split( ',' ) : [];
+			default_dscrptions = ( settings.defaultDescribedVideo && typeof settings.defaultDescribedVideo == 'string' ) ? settings.defaultDescribedVideo.split( ',' ) : [];
 
 		// Get all of the available descriptions
 		while ( i > 0 ) {
 
 			i--;
 
-			if ( sources[i]['data-open-description']  === undefined ) { sources[i]['data-open-description'] = false }
-			else if ( ! sources[i]['data-open-description'] ) { sources[i]['data-open-description'] = true }
+			if ( sources[i]['data-described-video']  === undefined ) { sources[i]['data-described-video'] = false }
+			else if ( ! sources[i]['data-described-video'] ) { sources[i]['data-described-video'] = true }
 
-			current_desc = sources[i]['data-open-description'];
+			current_desc = sources[i]['data-described-video'];
 
 			if ( typeof available_desc[current_desc] !== 'object' ) {
 
@@ -343,7 +346,7 @@
 		 *******************************************************************/
 
 		// Helper function to get the current description
-		player.getCurrentDesc = function() {
+		player.getCurrentDescription = function() {
 
 			if ( typeof player.currentDescription !== 'undefined' ) {
 
@@ -353,7 +356,7 @@
 
 				try {
 
-					return desc = player.options().sources[0]['data-open-description'];
+					return desc = player.options().sources[0]['data-described-video'];
 
 				} catch(e) {
 
@@ -373,7 +376,7 @@
 
 			// Toggle the currentDescription if no target_dscrption sepcified, and only two options
 			if ( ( target_dscrption === undefined ) && ( player.availableRes.length === 2 ) ) {
-				var curRes = player.getCurrentDesc();
+				var curRes = player.getCurrentDescription();
 				for ( one_desc in available_desc ) {
 					// Don't count the length property as a description
 					if ( 'length' == one_desc ) { continue; }
@@ -386,7 +389,7 @@
 			}
 
 			// Do nothing if we aren't changing descriptions or if the description isn't defined
-			if ( player.getCurrentDesc() == target_dscrption
+			if ( player.getCurrentDescription() == target_dscrption
 				|| ! player.availableRes
 				|| ! player.availableRes[target_dscrption] ) { return; }
 
@@ -408,9 +411,9 @@
 			player.currentDescription = target_dscrption;
 
 			// Make sure the button has been added to the control bar
-			if ( player.controlBar.descriptionSelector ) {
+			if ( player.controlBar.describedVideoSelector ) {
 
-				button_nodes = player.controlBar.descriptionSelector.el().firstChild.children;
+				button_nodes = player.controlBar.describedVideoSelector.el().firstChild.children;
 				button_node_count = button_nodes.length;
 
 				// Only update the button text if it's a menu button
@@ -438,26 +441,26 @@
 		 *******************************************************************/
 
 		// Get the starting description
-		current_desc = player.getCurrentDesc();
+		current_desc = player.getCurrentDescription();
 
 		if ( current_desc ) { current_desc = methods.description_label( current_desc ); }
 
 		// Add the description selector button
 		if ( available_desc.length <= 2 ) {
-			descriptionSelector = new _V_.DescriptionSelectorToggle( player, {
+			describedVideoSelector = new _V_.DescriptionSelectorToggle( player, {
 				buttonText		: descriptionButtonLabel,
 				available_desc	: available_desc
 			});
 
 		} else {
-			descriptionSelector = new _V_.DescriptionSelector( player, {
+			describedVideoSelector = new _V_.DescriptionSelector( player, {
 				buttonText		: (current_desc || descriptionButtonLabel),
 				available_desc	: available_desc
 			});
 		}
 
 		// Add the button to the control bar object and the DOM
-		player.controlBar.descriptionSelector = player.controlBar.addChild( descriptionSelector );
+		player.controlBar.describedVideoSelector = player.controlBar.addChild( describedVideoSelector );
 
 		// Update the classes to reflect the currently selected description
 		player.trigger( 'changeDescription' );

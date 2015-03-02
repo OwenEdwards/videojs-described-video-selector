@@ -6,23 +6,64 @@
   <script src="bower_components/videojs-youtube/dist/vjs.youtube.js"></script>
 
 	<!-- Load the videojs-resolution-selector plugin -->
-	<link href="video-description-selector.css" rel="stylesheet" type="text/css" />
-	<script src="video-description-selector.js"></script>
+	<link href="described-video-selector.css" rel="stylesheet" type="text/css" />
+	<script src="described-video-selector.js"></script>
 
 </head>
 <body>
-	<video id="example1" class="video-js vjs-default-skin" controls width="640" height="360" data-setup='{ "plugins" : { "descriptionSelector" : { } }, "techOrder": ["youtube"] }'>
+	<video id="example1" class="video-js vjs-default-skin" controls width="640" height="360" data-setup='{ "plugins" : { "describedVideoSelector" : { } }, "techOrder": ["youtube"] }'>
 		<source src="http://www.youtube.com/watch?v=OOgrSvnmhrY" type="video/youtube" />
-		<source src="http://www.youtube.com/watch?v=949D1IhKKYs" type="video/youtube" data-open-description />
+		<source src="http://www.youtube.com/watch?v=949D1IhKKYs" type="video/youtube" data-described-video />
 	</video>
 
 	<br>
 
-	<video id="example2" class="video-js vjs-default-skin" controls width="640" height="360" data-setup='{ "plugins" : { "descriptionSelector" : { "defaultDescription" : "Simple" } }, "techOrder": ["youtube"] }'>
+	<video id="example2" class="video-js vjs-default-skin" controls width="640" height="360" data-setup='{ "plugins" : { "describedVideoSelector" : { "defaultDescribedVideo" : "Simple" } }, "techOrder": ["youtube"] }'>
 		<source src="http://www.youtube.com/watch?v=OOgrSvnmhrY" type="video/youtube" />
-		<source src="http://www.youtube.com/watch?v=949D1IhKKYs" type="video/youtube" data-open-description="Simple" />
-		<source src="http://www.youtube.com/watch?v=Zl6xwuBJVIY" type="video/youtube" data-open-description="Extended" />
+		<source src="http://www.youtube.com/watch?v=949D1IhKKYs" type="video/youtube" data-described-video="Simple" />
+		<source src="http://www.youtube.com/watch?v=Zl6xwuBJVIY" type="video/youtube" data-described-video="Extended" />
 	</video>
+
+	<video id="example3" class="video-js vjs-default-skin" controls width="640" height="360" >
+		<source src="https://archive.org/download/WarOnThe00/WarOnThe00_512kb.mp4" type="video/mp4" />
+		<source src="https://archive.org/download/WarOnThe00/WarOnThe00.ogv"       type="video/ogv" />
+		<source src="http://vjs.zencdn.net/v/oceans.mp4"                           type="video/mp4" data-described-video />
+		<source src="http://vjs.zencdn.net/v/oceans.webm"                          type="video/webm" data-described-video />
+	</video>
+
+	<script>
+
+		/*
+		The first and second videos includes a data-setup attribute, and will be initialized
+		automatically when video.js loads.
+
+		The third video tag does not have a data-setup attribute, so we will initialize
+		video.js and our plugin here. This technique is well suited for videos that are loaded
+		dynamically.
+
+		*/
+
+		// Initialize video.js and activate the resolution selector plugin
+		videojs( '#example3', { plugins : { describedVideoSelector : {
+
+			// Pass any options here
+			defaultDescribedVideo : false
+
+		// Define an on.ready function
+		} } }, function() {
+
+			// "this" will be a reference to the player object
+			var player = this;
+
+			// Listen for the changeDescription event
+			player.on( 'changeDescription', function() {
+
+				// player.getCurrentDescription() can be used to get the currently selected description
+				console.log( 'Described video is: ' + player.getCurrentDescription() );
+			});
+		});
+
+	</script>
 
 </body>
 </html>
