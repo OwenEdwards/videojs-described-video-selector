@@ -1,0 +1,30 @@
+{
+  "name": "videojs-described-video-selector",
+  "version": "0.0.0",
+  "homepage": "https://github.com/OwenEdwards/videojs-described-video-selector",
+  "authors": [
+    "Owen Edwards <owen.r.edwards@gmail.com>"
+  ],
+  "description": "Add a control to select a described video (a video with 'open description') to Video.js",
+  "main": [
+    "described-video-selector.js",
+    "described-video-selector.css"
+  ],
+  "keywords": [
+    "video.js",
+    "video",
+    "accessibility",
+    "description"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "videojs-youtube": "~1.2.8"
+  }
+}
