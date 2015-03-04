@@ -3,7 +3,8 @@ Video.js Described Video Selector
 
 Add a button to Video.js to allow switching between different versions of a video,
 typically the original and one with '[audio descripton](http://www.wikipedia.org/wiki/Audio_description)' (additional narration added 
-into the soundtrack to assist understanding of the video).
+into the soundtrack to assist understanding of the video, especially by people who 
+are blind or low-vision).
 
 
 Basic Usage
@@ -57,22 +58,20 @@ It is also possible to have more than one described video, in which case the `da
 The plugin also triggers a `changeDescription` event on the player instance anytime the selected described video is changed (inluding at setup), so your code can listen for that and take any desired action on description changes:
 
 ````javascript
-    videojs( '#my-video-example',
-    	{ plugins : 
-    		{ describedVideoSelector :
-    			{
-    				defaultDescribedVideo : false
-    			}
-    		}
-    	}, function() {
-		
-		var player = this;
-		
-		player.on( 'changeDescription', function() {
-			
-				console.log( 'Described video is: ' + player.getCurrentDescription() );
-		});
-	});
+videojs( '#my-video-example',
+  { plugins : 
+    { describedVideoSelector :
+      {
+        defaultDescribedVideo : false
+      }
+    }
+  }, function() {
+    var player = this;
+
+    player.on( 'changeDescription', function() {
+          console.log( 'Described video is: ' + player.getCurrentDescription() );
+    });
+  });
 ````
 
 The plugin provides a `changeDescription` method on the `player` object. You can call it (after your player is ready) to set the description: `player.changeDescription( true )`.
