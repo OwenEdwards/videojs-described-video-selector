@@ -77,13 +77,19 @@ videojs( '#my-video-example',
 The plugin provides a `changeDescription` method on the `player` object. You can call it (after your player is ready) to set the description: `player.changeDescription( true )`.
 
 
-Known issues
+Bower Installation
+------------------
+
+`bower install videojs-described-video-selector`
+
+
+Known Issues
 ------------
 
 The plugin attempts to maintain the current time of the video and whether the video is playing or paused. An issue with the YouTube plugin mean that after a switch the YouTube player is always paused at the beginning of the video.
 
 
-Mobile devices
+Mobile Devices
 --------------
 If you want this plugin to work on mobile devices, you need to enable the video.js controls because the native controls are default on iOS and Android.
 
